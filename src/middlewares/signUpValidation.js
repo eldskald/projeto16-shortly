@@ -75,7 +75,12 @@ async function signUpValidation(req, res, next) {
             return res.status(422).send(message);
         }
 
+        if (body.password != body.confirmPassword) {
+            return res.status(422).send('Confirm your password correctly!');
+        }
+
         const query = await searchUser(null, null, body.email);
+        if (query instanceof Error) throw query;
         if (query.length > 0) return res.sendStatus(409);
 
         res.locals.body = {...body};
