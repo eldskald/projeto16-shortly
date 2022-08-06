@@ -44,3 +44,17 @@ export async function searchUser(id, name, email) {
         return err;
     }
 }
+
+export async function newSession(userId) {
+    try {
+        const { rows: query } = await connection.query(`
+            INSERT INTO sessions ("userId")
+            VALUES ($1)
+            RETURNING id
+        `, [userId]);
+        return query[0].id;
+
+    } catch (err) {
+        return err;
+    }
+}
