@@ -58,3 +58,17 @@ export async function newSession(userId) {
         return err;
     }
 }
+
+export async function searchUserFromSession(sessionId) {
+    try {
+        const { rows: query } = await connection.query(`
+            SELECT users.* FROM sessions
+            JOIN users ON users.id = sessions."userId"
+            WHERE sessions.id = $1
+        `, [sessionId]);
+        return query;
+
+    } catch (err) {
+        return err;
+    }
+}
