@@ -1,4 +1,4 @@
-import { userShortenedUrls } from '../repositories/usersRepository.js';
+import { userShortenedUrls, queryRanking } from '../repositories/usersRepository.js';
 import handleError from '../shared/handleError.js';
 
 export async function getUserProfile(_req, res) {
@@ -25,3 +25,14 @@ export async function getUserProfile(_req, res) {
     }
 }
 
+export async function getRanking(_req, res) {
+    try {
+        const ranking = await queryRanking();
+        if (ranking instanceof Error) throw ranking;
+        return res.status(200).send(ranking);
+
+    } catch (err) {
+        handleError(err);
+        return res.sendStatus(500);
+    }
+}

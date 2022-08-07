@@ -17,3 +17,22 @@ export async function userShortenedUrls(id) {
         return err;
     }
 }
+
+export async function queryRanking() {
+    try {
+        const { rows } = await connection.query(`
+            SELECT
+                users.id,
+                users.name,
+                COUNT("shortUrls".id) AS "linksCount",
+                SUM("shortUrls"."visitCount") AS "visitCount"
+            FROM "shortUrls"
+            JOIN users ON users.id = "shortUrls"."userId"
+            GROUP BY users.id
+        `);
+        return rows;
+
+    } catch (err) {
+        return err;
+    }
+}
