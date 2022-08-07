@@ -35,6 +35,21 @@ export async function findShortUrl(id, shortUrl) {
     }
 }
 
+export async function visitShortUrl(shortUrl) {
+    try {
+        const { rows } = await connection.query(`
+            UPDATE "shortUrls"
+            SET "visitCount" = "visitCount" + 1
+            WHERE "shortUrl" = $1
+            RETURNING url
+        `, [shortUrl]);
+        return rows[0].url;
+
+    } catch (err) {
+        return err;
+    }
+}
+
 export async function removeShortUrl(id, shortUrl) {
     try {
         if (id) {
