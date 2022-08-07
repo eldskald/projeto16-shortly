@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { newShortUrl, findShortUrl } from '../repositories/shortUrlsRepositories.js';
+import { newShortUrl, findShortUrl, removeShortUrl } from '../repositories/shortUrlsRepositories.js';
 import handleError from '../shared/handleError.js';
 
 export async function addShortUrl(_req, res) {
@@ -48,3 +48,24 @@ export async function openShortUrl(req, res) {
         res.sendStatus(500);
     }
 }
+
+export async function deleteShortUrl(req, res) {
+    try {
+        const shortUrlId = req.params.id;
+        const { user } = res.locals;
+
+        const shortUrl = await findShortUrl(shortUrlId, null);
+        if (shortUrl instanceof Error) throw query;
+        if (!shortUrl) return res.sendStatus(404);
+        if (shortUrl.userId !== user.id) return res.sendStatus(401);
+
+        const error = await removeShortUrl(shortUrlId, null);
+        if (error) throw query;
+        return res.sendStatus(204);
+
+    } catch (err) {
+        handleError(err);
+        res.sendStatus(500);
+    }
+}
+

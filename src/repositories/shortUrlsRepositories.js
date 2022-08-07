@@ -34,3 +34,23 @@ export async function findShortUrl(id, shortUrl) {
         return err;
     }
 }
+
+export async function removeShortUrl(id, shortUrl) {
+    try {
+        if (id) {
+            await connection.query(`
+                DELETE FROM "shortUrls"
+                WHERE "shortUrls".id = $1
+            `, [id]);
+        } else if (shortUrl) {
+            await connection.query(`
+                DELETE FROM "shortUrls"
+                WHERE "shortUrls".id = $1
+            `, [shortUrl]);
+        }
+        return;
+
+    } catch (err) {
+        return err;
+    }
+}
