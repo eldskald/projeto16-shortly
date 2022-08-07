@@ -8,7 +8,9 @@ config();
 async function tokenValidation(req, res, next) {
     try {
         const { authorization } = req.headers;
-        const token = authorization?.replace('Bearer ', '');
+        if (!authorization) return res.sendStatus(401);
+
+        const token = authorization.replace('Bearer ', '');
         const sessionId = jwt.verify(token, process.env.JWT_SECRET, () => {
             res.sendStatus(401);
         });
