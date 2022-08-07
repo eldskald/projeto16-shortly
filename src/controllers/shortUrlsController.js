@@ -20,7 +20,7 @@ export async function addShortUrl(_req, res) {
 export async function getShortUrl(req, res) {
     try {
         const shortUrlId = req.params.id;
-        const shortUrl = await findShortUrl(shortUrlId);
+        const shortUrl = await findShortUrl(shortUrlId, null);
         if (shortUrl instanceof Error) throw shortUrl;
         if (!shortUrl) return res.sendStatus(404);
         return res.status(200).send({
@@ -28,6 +28,20 @@ export async function getShortUrl(req, res) {
             shortUrl: shortUrl.shortUrl,
             url: shortUrl.url
         });
+
+    } catch (err) {
+        handleError(err);
+        res.sendStatus(500);
+    }
+}
+
+export async function openShortUrl(req, res) {
+    try {
+        const { shortUrl } = req.params;
+        const query = await findShortUrl(null, shortUrl);
+        if (query instanceof Error) throw query;
+        if (!query) return res.sendStatus(404);
+        res.redirect(query.url);
 
     } catch (err) {
         handleError(err);

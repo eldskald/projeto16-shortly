@@ -14,14 +14,22 @@ export async function newShortUrl(shortUrl, url, userId) {
     }
 }
 
-export async function findShortUrl(id) {
+export async function findShortUrl(id, shortUrl) {
     try {
-        const { rows } = await connection.query(`
-            SELECT * FROM "shortUrls"
-            WHERE "shortUrls".id = $1
-        `, [id]);
-        return rows[0];
-
+        if (id) {
+            const { rows } = await connection.query(`
+                SELECT * FROM "shortUrls"
+                WHERE "shortUrls".id = $1
+            `, [id]);
+            return rows[0];
+        } else if (shortUrl) {
+            const { rows } = await connection.query(`
+                SELECT * FROM "shortUrls"
+                WHERE "shortUrls"."shortUrl" = $1
+            `, [shortUrl]);
+            return rows[0];
+        }
+        
     } catch (err) {
         return err;
     }
