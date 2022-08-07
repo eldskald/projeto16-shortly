@@ -62,7 +62,7 @@ export async function newSession(userId) {
 export async function searchUserFromSession(sessionId) {
     try {
         const { rows: query } = await connection.query(`
-            SELECT users.* FROM sessions
+            SELECT users.id, users.name, users.email FROM sessions
             JOIN users ON users.id = sessions."userId"
             WHERE sessions.id = $1
         `, [sessionId]);

@@ -11,13 +11,15 @@ async function tokenValidation(req, res, next) {
         if (!authorization) return res.sendStatus(401);
 
         const token = authorization.replace('Bearer ', '');
-        const sessionId = jwt.verify(token, process.env.JWT_SECRET, () => {
-            res.sendStatus(401);
+        let sessionId;
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err) return res.sendStatus(401);
+            sessionId = decoded.sessionId;
         });
-
+        
         const query = await searchUserFromSession(sessionId);
         if (query instanceof Error) throw query; 
-        if (query.length) return res.sendStatus(401);
+        if (query.length === 0) return res.sendStatus(401);
         
         res.locals.user = query[0];
         next();
