@@ -29,6 +29,8 @@ export async function queryRanking() {
             FROM "shortUrls"
             JOIN users ON users.id = "shortUrls"."userId"
             GROUP BY users.id
+            ORDER BY "visitCount" DESC
+            LIMIT 10
         `);
         return rows;
 
